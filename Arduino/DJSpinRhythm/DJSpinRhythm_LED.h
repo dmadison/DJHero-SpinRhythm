@@ -18,10 +18,10 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DJLucio_LED_h
-#define DJLucio_LED_h
+#ifndef DJSpinRhythm_LED_h
+#define DJSpinRhythm_LED_h
 
-#include "DJLucio_Platforms.h"
+#include "DJSpinRhythm_Platforms.h"
 
 // SoftwareOscillator: oscillates its state output based on the given period, using the millis() timekeeper
 class SoftwareOscillator {

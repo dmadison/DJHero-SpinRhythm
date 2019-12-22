@@ -18,11 +18,11 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DJLucio_Controller_h
-#define DJLucio_Controller_h
+#ifndef DJSpinRhythm_Controller_h
+#define DJSpinRhythm_Controller_h
 
 #include <NintendoExtensionCtrl.h>
-#include "DJLucio_Util.h"
+#include "DJSpinRhythm_Util.h"
 
 #ifdef DEBUG_CONTROLDETECT
 #define D_CD(x)   DEBUG_PRINT(x)

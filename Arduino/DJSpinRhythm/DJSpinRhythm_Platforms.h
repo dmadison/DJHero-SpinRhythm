@@ -18,8 +18,8 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DJLucio_Platforms_h
-#define DJLucio_Platforms_h
+#ifndef DJSpinRhythm_Platforms_h
+#define DJSpinRhythm_Platforms_h
 
 /* Each board type requires the following definitions:
 *

@@ -18,12 +18,12 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DJLucio_HID_h
-#define DJLucio_HID_h
+#ifndef DJSpinRhythm_HID_h
+#define DJSpinRhythm_HID_h
 
 #include <Mouse.h>
 #include <Keyboard.h>
-#include "DJLucio_Util.h"
+#include "DJSpinRhythm_Util.h"
 
 #ifdef DEBUG_HID
 #define D_HID(x)   DEBUG_PRINT(x)

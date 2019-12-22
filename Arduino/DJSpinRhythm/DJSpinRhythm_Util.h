@@ -18,8 +18,8 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DJLucio_Util_h
-#define DJLucio_Util_h
+#ifndef DJSpinRhythm_Util_h
+#define DJSpinRhythm_Util_h
 
 #ifdef DEBUG
 #define DEBUG_PRINT(x)   do {Serial.print(x);}   while(0)

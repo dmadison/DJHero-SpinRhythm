@@ -18,11 +18,11 @@
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DJLucio_ConfigMode_h
-#define DJLucio_ConfigMode_h
+#ifndef DJSpinRhythm_ConfigMode_h
+#define DJSpinRhythm_ConfigMode_h
 
 #include <EEPROM.h>
-#include "DJLucio_Util.h"
+#include "DJSpinRhythm_Util.h"
 
 #ifdef DEBUG_CONFIG
 #define D_CFG(x)   DEBUG_PRINT(x)
