@@ -1,10 +1,8 @@
-# DJ Hero Lucio
-This project allows a user to play the character of [Lucio](https://playoverwatch.com/en-us/heroes/lucio/) in *Overwatch* using an Arduino and a DJ Hero turntable for the Nintendo Wii.
-
-For more information, check out the blog post on [PartsNotIncluded.com](http://www.partsnotincluded.com/altctrl/playing-lucio-with-a-dj-hero-turntable).
+# DJ Hero Adapter for Spin Rhythm XD
+This project allows a user to play [Spin Rhythm XD](https://www.spinrhythmgame.com/) using an Arduino and a DJ Hero turntable for the Nintendo Wii.
 
 ## Dependencies
-The DJ Hero Lucio program uses my [NintendoExtensionCtrl library](https://github.com/dmadison/NintendoExtensionCtrl/) ([0.7.1](https://github.com/dmadison/NintendoExtensionCtrl/releases/tag/v0.7.1)) to handle communication to the DJ Hero controller itself.
+The DJ Hero firmware uses my [NintendoExtensionCtrl library](https://github.com/dmadison/NintendoExtensionCtrl/) ([0.7.1](https://github.com/dmadison/NintendoExtensionCtrl/releases/tag/v0.7.1)) to handle communication to the DJ Hero controller itself.
 
 This program was compiled using version [1.8.6](https://www.arduino.cc/en/Main/OldSoftwareReleases) of the [Arduino IDE](https://www.arduino.cc/en/Main/Software). If using an Arduino board such as the Leonardo or Pro Micro, the program is dependent on the Arduino Keyboard, Mouse, and Wire libraries which are installed with the IDE. If using a Teensy microcontroller, the program was built using [Teensyduino 1.44](https://www.pjrc.com/teensyduino-1-44-released/) which you can download [here](https://www.pjrc.com/teensy/td_144), and also requires the [i2c_t3 library](https://github.com/nox771/i2c_t3) version [10.1](https://github.com/nox771/i2c_t3/releases/tag/v10.1).
 
