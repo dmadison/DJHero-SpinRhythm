@@ -1,8 +1,8 @@
 /*
-*  Project     DJ Hero - Lucio
+*  Project     DJ Hero - Spin Rhythm XD Controller
 *  @author     David Madison
-*  @link       github.com/dmadison/DJHero-Lucio
-*  @license    GPLv3 - Copyright (c) 2018 David Madison
+*  @link       github.com/dmadison/DJHero-SpinRhythm
+*  @license    GPLv3 - Copyright (c) 2020 David Madison
 *
 *  This program is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
 *
 *  You should have received a copy of the GNU General Public License
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*  Forked from the DJ Hero Lucio project: github.com/dmadison/DJHero-Lucio
 */
 
 #include <NintendoExtensionCtrl.h>
@@ -44,10 +46,10 @@ const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities f
 
 // ---------------------------------------------------------------------------
 
-#include "DJLucio_LED.h"   // LED handling classes
-#include "DJLucio_HID.h"   // HID classes (Keyboard, Mouse)
-#include "DJLucio_Controller.h"  // Turntable connection and data helper classes
-#include "DJLucio_ConfigMode.h"  // Configuration mode (left/right) switching class
+#include "DJSpinRhythm_LED.h"   // LED handling classes
+#include "DJSpinRhythm_HID.h"   // HID classes (Keyboard, Mouse)
+#include "DJSpinRhythm_Controller.h"  // Turntable connection and data helper classes
+#include "DJSpinRhythm_ConfigMode.h"  // Configuration mode (left/right) switching class
 
 DJTurntableController dj;
 
@@ -79,8 +81,8 @@ void setup() {
 	#ifdef DEBUG
 	Serial.begin(115200);
 	while (!Serial);  // Wait for connection
-	DEBUG_PRINTLN("DJ Hero - Lucio v1.0.2");
-	DEBUG_PRINTLN("By David Madison, (c) 2018");
+	DEBUG_PRINTLN("DJ Hero - Spin Rhythm XD Controller v0.0.0");
+	DEBUG_PRINTLN("By David Madison, (c) 2020");
 	DEBUG_PRINTLN("http://www.partsnotincluded.com");
 	DEBUG_PRINTLN("----------------------------");
 	#endif

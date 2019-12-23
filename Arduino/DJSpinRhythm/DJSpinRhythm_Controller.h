@@ -1,8 +1,8 @@
 /*
-*  Project     DJ Hero - Lucio
+*  Project     DJ Hero - Spin Rhythm XD Controller
 *  @author     David Madison
-*  @link       github.com/dmadison/DJHero-Lucio
-*  @license    GPLv3 - Copyright (c) 2018 David Madison
+*  @link       github.com/dmadison/DJHero-SpinRhythm
+*  @license    GPLv3 - Copyright (c) 2020 David Madison
 *
 *  This program is free software: you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,13 +16,15 @@
 *
 *  You should have received a copy of the GNU General Public License
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+*  Forked from the DJ Hero Lucio project: github.com/dmadison/DJHero-Lucio
 */
 
-#ifndef DJLucio_Controller_h
-#define DJLucio_Controller_h
+#ifndef DJSpinRhythm_Controller_h
+#define DJSpinRhythm_Controller_h
 
 #include <NintendoExtensionCtrl.h>
-#include "DJLucio_Util.h"
+#include "DJSpinRhythm_Util.h"
 
 #ifdef DEBUG_CONTROLDETECT
 #define D_CD(x)   DEBUG_PRINT(x)
