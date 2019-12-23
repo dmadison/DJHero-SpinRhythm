@@ -8,5 +8,10 @@ This program was compiled using version [1.8.6](https://www.arduino.cc/en/Main/O
 
 I've linked to the specific library releases that work with this code. Note that other versions may not be compatible.
 
+## History
+This repository is a fork of the [DJHero-Lucio project](https://github.com/dmadison/DJHero-Lucio), where I modified a DJ Hero controller to play the character of Lucio in *Overwatch*. It retains the same license (GPL v3) and code structure. Only the outgoing control scheme has changed.
+
+For more information, check out the blog post on [PartsNotIncluded.com](http://www.partsnotincluded.com/altctrl/playing-lucio-with-a-dj-hero-turntable).
+
 ## License
 This project is licensed under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html), either version 3 of the License, or (at your option) any later version.
