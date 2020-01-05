@@ -56,10 +56,10 @@ DJTurntableController dj;
 DJTurntableController::TurntableExpansion * mainTable = &dj.right;
 DJTurntableController::TurntableExpansion * altTable = &dj.left;
 
-KeyboardButton moveForward('w');
-KeyboardButton moveLeft('a');
-KeyboardButton moveBack('s');
-KeyboardButton moveRight('d');
+KeyboardButton navigateUp('w');
+KeyboardButton navigateLeft('a');
+KeyboardButton navigateDown('s');
+KeyboardButton navigateRight('d');
 
 EffectHandler fx(dj, EffectsTimeout);
 
@@ -106,7 +106,7 @@ void djController() {
 	// --Base Station Abilities--
 	fx.update();
 
-	// Movement
+	// Menu Navigation
 	joyWASD(dj.joyX(), dj.joyY());
 
 	// --Cleanup--
@@ -150,9 +150,9 @@ void joyWASD(uint8_t x, uint8_t y) {
 	const uint8_t JoyCenter = 32;
 	const uint8_t JoyDeadzone = 6;  // +/-, centered at 32 in (0-63)
 
-	moveLeft.press(x < JoyCenter - JoyDeadzone);
-	moveRight.press(x > JoyCenter + JoyDeadzone);
+	navigateLeft.press(x < JoyCenter - JoyDeadzone);
+	navigateRight.press(x > JoyCenter + JoyDeadzone);
 
-	moveForward.press(y > JoyCenter + JoyDeadzone);
-	moveBack.press(y < JoyCenter - JoyDeadzone);
+	navigateUp.press(y > JoyCenter + JoyDeadzone);
+	navigateDown.press(y < JoyCenter - JoyDeadzone);
 }
