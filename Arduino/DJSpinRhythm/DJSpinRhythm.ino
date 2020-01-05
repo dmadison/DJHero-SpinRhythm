@@ -111,21 +111,7 @@ void loop() {
 void djController() {
 	// Single turntable (either side)
 	if (dj.getNumTurntables() == 1) {
-		// Aiming
-		if (dj.buttonMinus()) {  // Vertical selector
-			// Left is vertical, counter-clockwise is up
-			if (dj.getTurntableConfig() == DJTurntableController::TurntableConfig::Left) { 
-				aiming(0, dj.turntable());
-			}
-			// Right is vertical, clockwise is up
-			else {
-				aiming(0, -dj.turntable());
-			}
-			
-		}
-		else {
-			aiming(dj.turntable(), 0);
-		}
+		aiming(dj.turntable(), 0);
 
 		// Movement
 		jump.press(dj.buttonRed());
