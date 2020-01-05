@@ -139,9 +139,9 @@ void joyWASD(uint8_t x, uint8_t y) {
 	const uint8_t JoyCenter = 32;
 	const uint8_t JoyDeadzone = 6;  // +/-, centered at 32 in (0-63)
 
-	navigateLeft.press(x < JoyCenter - JoyDeadzone);
-	navigateRight.press(x > JoyCenter + JoyDeadzone);
+	navigateLeft.set(x < JoyCenter - JoyDeadzone);
+	navigateRight.set(x > JoyCenter + JoyDeadzone);
 
-	navigateUp.press(y > JoyCenter + JoyDeadzone);
-	navigateDown.press(y < JoyCenter - JoyDeadzone);
+	navigateUp.set(y > JoyCenter + JoyDeadzone);
+	navigateDown.set(y < JoyCenter - JoyDeadzone);
 }

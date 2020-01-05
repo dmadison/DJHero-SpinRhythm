@@ -86,17 +86,21 @@ public:
 		}
 	}
 
-	void press(boolean state = true) {
+	void press() {
+		set(true);
+	}
+
+	void release() {
+		set(false);
+	}
+
+	void set(boolean state) {
 		if (state == pressed) {
 			return; // Nothing to see here, folks
 		}
 
 		sendState(state);
 		pressed = state;
-	}
-
-	void release() {
-		press(false);
 	}
 
 	// Release all buttons, using the linked list
