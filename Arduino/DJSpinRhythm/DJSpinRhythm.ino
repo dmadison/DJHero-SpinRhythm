@@ -104,13 +104,11 @@ void loop() {
 }
 
 void djController() {
-	// Single turntable (either side)
-	if (dj.getNumTurntables() == 1) {
-		moveWheel(dj.turntable());
+	// Turntable Controls
+	moveWheel(dj.turntable());
 
-		grabWheel.set(dj.buttonRed());
-		tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
-	}
+	grabWheel.set(dj.buttonRed());
+	tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 
 	// --Base Station Abilities--
 	fx.update();
