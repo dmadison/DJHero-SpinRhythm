@@ -55,6 +55,9 @@ DJTurntableController dj;
 DJTurntableController::TurntableExpansion * mainTable = &dj.right;
 DJTurntableController::TurntableExpansion * altTable = &dj.left;
 
+MouseButton grabWheel(MOUSE_LEFT);
+MouseButton tapWheel(MOUSE_RIGHT);
+
 KeyboardButton navigateUp('w');
 KeyboardButton navigateLeft('a');
 KeyboardButton navigateDown('s');
@@ -100,6 +103,9 @@ void djController() {
 	// Single turntable (either side)
 	if (dj.getNumTurntables() == 1) {
 		moveWheel(dj.turntable());
+
+		grabWheel.set(dj.buttonRed());
+		tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 	}
 
 	// --Base Station Abilities--
