@@ -109,30 +109,8 @@ void loop() {
 }
 
 void djController() {
-	// Dual turntables
-	if (dj.getNumTurntables() == 2) {
-		if (!dj.buttonMinus()) {  // Button to disable aiming (for position correction)
-			// Left is vertical, counter-clockwise is up
-			if (altTable == &dj.left) {
-				aiming(mainTable->turntable(), altTable->turntable());
-			}
-			// Right is vertical, clockwise is up
-			else {
-				aiming(mainTable->turntable(), -altTable->turntable());
-			}
-			
-		}
-
-		// Movement
-		jump.press(mainTable->buttonRed());
-
-		// Weapons
-		fire.press(mainTable->buttonGreen() || mainTable->buttonBlue());  // Outside buttons
-		boop.press(altTable->buttonGreen() || altTable->buttonRed() || altTable->buttonBlue());
-	}
-
 	// Single turntable (either side)
-	else if (dj.getNumTurntables() == 1) {
+	if (dj.getNumTurntables() == 1) {
 		// Aiming
 		if (dj.buttonMinus()) {  // Vertical selector
 			// Left is vertical, counter-clockwise is up
