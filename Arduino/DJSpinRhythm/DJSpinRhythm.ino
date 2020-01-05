@@ -56,21 +56,10 @@ DJTurntableController dj;
 DJTurntableController::TurntableExpansion * mainTable = &dj.right;
 DJTurntableController::TurntableExpansion * altTable = &dj.left;
 
-MouseButton fire(MOUSE_LEFT);
-MouseButton boop(MOUSE_RIGHT);
-KeyboardButton reload('r');
-
-KeyboardButton ultimate('q');
-KeyboardButton amp('e');
-KeyboardButton crossfade(KEY_LEFT_SHIFT);
-
-KeyboardButton emotes('c');
-
 KeyboardButton moveForward('w');
 KeyboardButton moveLeft('a');
 KeyboardButton moveBack('s');
 KeyboardButton moveRight('d');
-KeyboardButton jump(' ');
 
 EffectHandler fx(dj, EffectsTimeout);
 
@@ -112,13 +101,6 @@ void djController() {
 	// Single turntable (either side)
 	if (dj.getNumTurntables() == 1) {
 		aiming(dj.turntable(), 0);
-
-		// Movement
-		jump.press(dj.buttonRed());
-
-		// Weapons
-		fire.press(dj.buttonGreen());
-		boop.press(dj.buttonBlue());
 	}
 
 	// --Base Station Abilities--
@@ -126,17 +108,6 @@ void djController() {
 
 	// Movement
 	joyWASD(dj.joyX(), dj.joyY());
-
-	// Weapons
-	reload.press(fx.changed(EffectThreshold) && fx.getTotal() < 0);
-
-	// Abilities
-	ultimate.press(dj.buttonEuphoria());
-	amp.press(fx.changed(EffectThreshold) && fx.getTotal() > 0);
-	crossfade.press(dj.crossfadeSlider() > 1);
-
-	// Fun stuff!
-	emotes.press(dj.buttonPlus());
 
 	// --Cleanup--
 	if (fx.changed(EffectThreshold)) {
