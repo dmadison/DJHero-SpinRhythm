@@ -24,7 +24,6 @@
 
 // User Settings
 const int8_t HorizontalSens = 5;  // Mouse sensitivity multipler - 6 max
-const int8_t VerticalSens   = 2;  // Mouse sensitivity multipler - 6 max
 const int8_t MaxAimInput = 20;    // Ignore aim values above this threshold as extranous
 
 // Tuning Options
@@ -100,7 +99,7 @@ void loop() {
 void djController() {
 	// Single turntable (either side)
 	if (dj.getNumTurntables() == 1) {
-		aiming(dj.turntable(), 0);
+		aiming(dj.turntable());
 	}
 
 	// --Base Station Abilities--
@@ -115,33 +114,22 @@ void djController() {
 	}
 }
 
-void aiming(int8_t xIn, int8_t yIn) {
+void aiming(int8_t xIn) {
 	static_assert(HorizontalSens * MaxAimInput <= 127, "Your sensitivity is too high!");  // Check for signed overflow (int8_t)
-	static_assert(VerticalSens   * MaxAimInput <= 127, "Your sensitivity is too high!");
 
-	static int8_t lastAim[2] = { 0, 0 };
-	int8_t * aim[2] = { &xIn, &yIn };  // Store in array for iterative access
+	static int8_t lastAim = 0;
 
-	// Iterate through X/Y
-	for (int i = 0; i < 2; i++) {
-		// Check if above max threshold
-		if (abs(*aim[i]) >= MaxAimInput) {
-			*aim[i] = lastAim[i];
-		}
+	// Check if above max threshold
+	if (abs(xIn) >= MaxAimInput) xIn = lastAim;
+	else lastAim = xIn;
 
-		// Set 'last' value to current
-		lastAim[i] = *aim[i];
-	}
-
-	Mouse.move(xIn * HorizontalSens, yIn * VerticalSens);
+	Mouse.move(xIn * HorizontalSens, 0);
 
 	#ifdef DEBUG_HID
-	if (xIn != 0 || yIn != 0) {
+	if (xIn != 0) {
 		DEBUG_PRINT("Moved the mouse {");
 		DEBUG_PRINT(xIn * HorizontalSens);
-		DEBUG_PRINT(", ");
-		DEBUG_PRINT(yIn * VerticalSens);
-		DEBUG_PRINTLN("}");
+		DEBUG_PRINTLN(", 0}");
 	}
 	#endif
 }
