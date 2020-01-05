@@ -110,7 +110,7 @@ void djController() {
 	grabWheel.set(dj.buttonRed());
 	tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 
-	// --Base Station Abilities--
+	// Base Unit Controls
 	fx.update();
 
 	beat.set(dj.buttonEuphoria());
