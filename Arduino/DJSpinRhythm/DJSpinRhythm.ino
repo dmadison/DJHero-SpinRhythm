@@ -23,8 +23,8 @@
 #include <NintendoExtensionCtrl.h>
 
 // User Settings
-const int8_t HorizontalSens = 5;  // Mouse sensitivity multipler - 6 max
-const int8_t MaxAimInput = 20;    // Ignore aim values above this threshold as extranous
+const int8_t WheelSensitivity = 5;  // Mouse sensitivity multipler - 6 max
+const int8_t MaxAimInput = 20;      // Ignore aim values above this threshold as extranous
 
 // Tuning Options
 const unsigned long UpdateRate = 4;          // Controller polling rate, in milliseconds (ms)
@@ -99,7 +99,7 @@ void loop() {
 void djController() {
 	// Single turntable (either side)
 	if (dj.getNumTurntables() == 1) {
-		aiming(dj.turntable());
+		moveWheel(dj.turntable());
 	}
 
 	// --Base Station Abilities--
@@ -114,8 +114,9 @@ void djController() {
 	}
 }
 
-void aiming(int8_t xIn) {
-	static_assert(HorizontalSens * MaxAimInput <= 127, "Your sensitivity is too high!");  // Check for signed overflow (int8_t)
+void moveWheel(int8_t xIn) {
+	// Check for signed overflow (int8_t). The USB mouse output only takes one int8_t value per update.
+	static_assert(WheelSensitivity * MaxAimInput <= 127, "Your sensitivity is too high!");  // Check for signed overflow (int8_t)
 
 	static int8_t lastAim = 0;
 
@@ -123,12 +124,12 @@ void aiming(int8_t xIn) {
 	if (abs(xIn) >= MaxAimInput) xIn = lastAim;
 	else lastAim = xIn;
 
-	Mouse.move(xIn * HorizontalSens, 0);
+	Mouse.move(xIn * WheelSensitivity, 0);
 
 	#ifdef DEBUG_HID
 	if (xIn != 0) {
 		DEBUG_PRINT("Moved the mouse {");
-		DEBUG_PRINT(xIn * HorizontalSens);
+		DEBUG_PRINT(xIn * WheelSensitivity);
 		DEBUG_PRINTLN(", 0}");
 	}
 	#endif
