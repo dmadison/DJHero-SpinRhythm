@@ -46,6 +46,7 @@ const unsigned long ConnectRate = 500;       // Rate to attempt reconnections, i
 #include "DJSpinRhythm_Controller.h"  // Turntable connection and data helper classes
 
 DJTurntableController dj;
+ConnectionHelper controller(dj, DetectPin, UpdateRate, DetectTime, ConnectRate);
 
 MouseButton grabWheel(MOUSE_LEFT);
 MouseButton tapWheel(MOUSE_RIGHT);
@@ -59,7 +60,6 @@ KeyboardButton navigateLeft('a');
 KeyboardButton navigateDown('s');
 KeyboardButton navigateRight('d');
 
-ConnectionHelper controller(dj, DetectPin, UpdateRate, DetectTime, ConnectRate);
 
 void setup() {
 	#ifdef DEBUG
