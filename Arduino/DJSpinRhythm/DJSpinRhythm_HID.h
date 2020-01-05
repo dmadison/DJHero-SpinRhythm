@@ -165,6 +165,12 @@ private:
 		#ifdef DEBUG_HID
 		DEBUG_PRINT("Keyboard ");
 		switch (key) {
+			case(KEY_RETURN):
+				DEBUG_PRINT("return");
+				break;
+			case(KEY_ESC):
+				DEBUG_PRINT("esc");
+				break;
 			case(KEY_LEFT_SHIFT):
 			case(KEY_RIGHT_SHIFT):
 				DEBUG_PRINT("shift");

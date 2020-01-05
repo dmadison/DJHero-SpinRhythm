@@ -58,6 +58,10 @@ DJTurntableController::TurntableExpansion * altTable = &dj.left;
 MouseButton grabWheel(MOUSE_LEFT);
 MouseButton tapWheel(MOUSE_RIGHT);
 
+KeyboardButton beat(' ');
+KeyboardButton cancel(KEY_ESC);
+KeyboardButton submit(KEY_RETURN);
+
 KeyboardButton navigateUp('w');
 KeyboardButton navigateLeft('a');
 KeyboardButton navigateDown('s');
@@ -110,6 +114,10 @@ void djController() {
 
 	// --Base Station Abilities--
 	fx.update();
+
+	beat.set(dj.buttonEuphoria());
+	cancel.set(dj.buttonMinus());
+	submit.set(dj.buttonPlus());
 
 	// Menu Navigation
 	joyWASD(dj.joyX(), dj.joyY());
