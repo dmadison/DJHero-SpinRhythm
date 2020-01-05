@@ -151,7 +151,7 @@ void moveWheel(int8_t xIn) {
 
 void joyWASD(uint8_t x, uint8_t y) {
 	const uint8_t JoyCenter = 32;
-	const uint8_t JoyDeadzone = 6;  // +/-, centered at 32 in (0-63)
+	const uint8_t JoyDeadzone = 12;  // +/-, centered at 32 in (0-63)
 
 	navigateLeft.set(x < JoyCenter - JoyDeadzone);
 	navigateRight.set(x > JoyCenter + JoyDeadzone);
