@@ -30,7 +30,6 @@ const int8_t MaxAimInput = 20;      // Ignore aim values above this threshold as
 const unsigned long UpdateRate = 4;          // Controller polling rate, in milliseconds (ms)
 const unsigned long DetectTime = 1000;       // Time before a connected controller is considered stable (ms)
 const unsigned long ConnectRate = 500;       // Rate to attempt reconnections, in ms
-const unsigned long ConfigThreshold = 3000;  // Time the euphoria and green buttons must be held to set a new config (ms)
 const unsigned long EffectsTimeout = 1200;   // Timeout for the effects tracker, in ms
 const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities from the fx dial, 10 = 1/3rd of a revolution
 // #define IGNORE_DETECT_PIN                 // Ignore the state of the 'controller detect' pin, for breakouts without one.
@@ -41,19 +40,14 @@ const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities f
 // #define DEBUG_HID            // See HID inputs as they're pressed/released
 // #define DEBUG_COMMS          // Follow the controller connect and update calls
 // #define DEBUG_CONTROLDETECT  // Trace the controller detect pin functions
-// #define DEBUG_CONFIG         // Debug the config read/set functionality
 
 // ---------------------------------------------------------------------------
 
 #include "DJSpinRhythm_LED.h"   // LED handling classes
 #include "DJSpinRhythm_HID.h"   // HID classes (Keyboard, Mouse)
 #include "DJSpinRhythm_Controller.h"  // Turntable connection and data helper classes
-#include "DJSpinRhythm_ConfigMode.h"  // Configuration mode (left/right) switching class
 
 DJTurntableController dj;
-
-DJTurntableController::TurntableExpansion * mainTable = &dj.right;
-DJTurntableController::TurntableExpansion * altTable = &dj.left;
 
 MouseButton grabWheel(MOUSE_LEFT);
 MouseButton tapWheel(MOUSE_RIGHT);
@@ -70,7 +64,6 @@ KeyboardButton navigateRight('d');
 EffectHandler fx(dj, EffectsTimeout);
 
 ConnectionHelper controller(dj, DetectPin, UpdateRate, DetectTime, ConnectRate);
-TurntableConfig config(dj, &DJTurntableController::buttonEuphoria, &DJTurntableController::TurntableExpansion::buttonGreen, ConfigThreshold);
 
 void setup() {
 	#ifdef DEBUG
@@ -89,7 +82,6 @@ void setup() {
 	}
 
 	LED.begin();  // Set LED pin mode
-	config.read();  // Set expansion pointers from EEPROM config
 	controller.begin();  // Initialize controller bus and detect pins
 
 	DEBUG_PRINTLN("Initialization finished. Starting program...");
@@ -98,7 +90,6 @@ void setup() {
 void loop() {
 	if (controller.isReady()) {
 		djController();
-		config.check();
 	}
 	LED.update();
 }
