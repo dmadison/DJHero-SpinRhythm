@@ -30,6 +30,8 @@ const int8_t MaxWheelInput = 10;    // Ignore values above this threshold as ext
 const unsigned long UpdateRate = 4;          // Controller polling rate, in milliseconds (ms)
 const unsigned long DetectTime = 1000;       // Time before a connected controller is considered stable (ms)
 const unsigned long ConnectRate = 500;       // Rate to attempt reconnections, in ms
+const unsigned long EffectsTimeout = 1200;   // Timeout for the effects tracker, in ms
+const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities from the fx dial, 10 = 1/3rd of a revolution
 // #define IGNORE_DETECT_PIN                 // Ignore the state of the 'controller detect' pin, for breakouts without one.
 
 // Debug Flags (uncomment to add)
@@ -60,6 +62,7 @@ KeyboardButton navigateLeft('a');
 KeyboardButton navigateDown('s');
 KeyboardButton navigateRight('d');
 
+EffectHandler fx(dj, EffectsTimeout);
 
 void setup() {
 	#ifdef DEBUG
@@ -98,12 +101,19 @@ void djController() {
 	tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 
 	// Base Unit Controls
+	fx.update();
+
 	beat.set(dj.buttonEuphoria());
 	cancel.set(dj.buttonMinus());
 	submit.set(dj.buttonPlus());
 
 	// Menu Navigation
 	joyWASD(dj.joyX(), dj.joyY());
+
+	// --Cleanup--
+	if (fx.changed(EffectThreshold)) {
+		fx.reset();  // Already used abilities, reset to 0
+	}
 }
 
 void moveWheel(int8_t xIn) {

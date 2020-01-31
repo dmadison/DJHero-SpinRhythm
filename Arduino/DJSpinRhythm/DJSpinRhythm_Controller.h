@@ -43,6 +43,49 @@
 extern DJTurntableController dj;
 extern LEDHandler LED;
 
+// EffectHandler: Keeps track of changes to the turntable's "effect dial"
+class EffectHandler {
+public:
+	EffectHandler(DJTurntableController &dj, unsigned long t) : fx(dj), timeout(t) {}
+
+	boolean changed(uint8_t threshold) {
+		return abs(total) >= threshold;
+	}
+
+	void update() {
+		const uint8_t MaxChange = 5;  // Arbitrary, for spurious value check
+
+		int8_t fxChange = fx.getChange();  // Change since last update
+
+		// Check inactivity timer
+		if (fxChange != 0) {
+			timeout.reset();  // Keep alive
+		}
+		else if (timeout.ready()) {
+			total = 0;
+		}
+
+		if (abs(fxChange) > MaxChange) {  // Assumed spurious
+			fxChange = 0;
+		}
+		total += fxChange;
+	}
+
+	int16_t getTotal() {
+		return total;
+	}
+
+	void reset() {
+		total = 0;
+	}
+
+private:
+	DJTurntableController::EffectRollover fx;
+	RateLimiter timeout;  // Timeout for the fx tracker to be zero'd
+
+	int16_t total = 0;
+};
+
 
 // ControllerDetect: Measures and debounces the controller's "connected" pin
 class ControllerDetect {
