@@ -97,9 +97,23 @@ void loop() {
 }
 
 void djController() {
-	// Turntable Controls
-	moveWheel(dj.turntable());
+	// "Wheel" Control
+	int8_t turntableOutput = 0;
 
+	if (dj.getNumTurntables() == 2) {
+		const uint8_t crossfade = dj.crossfadeSlider();  // use slider as selector
+
+		if (crossfade < 6) turntableOutput = dj.left.turntable();  // slider is left, use left turntable only
+		else if (crossfade > 8) turntableOutput = dj.right.turntable();  // slider is right, use right turntable only
+		else turntableOutput = dj.turntable();  // centered, get a mix of both (+)
+	}
+	else {
+		turntableOutput = dj.turntable();  // use whichever turntable is connected
+	}
+
+	moveWheel(turntableOutput);
+
+	// Turntable Buttons
 	grabWheel.set(dj.buttonRed());
 	tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 
