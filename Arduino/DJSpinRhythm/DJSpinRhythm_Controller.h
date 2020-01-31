@@ -136,6 +136,8 @@ public:
 	void begin() {
 		detect.begin();  // Initialize CD pin as input
 		controller.begin();  // Start I2C bus
+		controller.i2c().setDefaultTimeout(2000);  // 2 ms timeout period
+		controller.i2c().setClock(400000);  // 400 KHz I2C
 		LED.blink(LED_BlinkSpeed);  // Start the LED blinking (disconnected)
 	}
 
