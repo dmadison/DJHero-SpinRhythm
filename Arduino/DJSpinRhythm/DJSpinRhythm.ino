@@ -23,17 +23,15 @@
 #include <NintendoExtensionCtrl.h>
 
 // User Settings
-const int8_t HorizontalSens = 5;  // Mouse sensitivity multipler - 6 max
-const int8_t VerticalSens   = 2;  // Mouse sensitivity multipler - 6 max
-const int8_t MaxAimInput = 20;    // Ignore aim values above this threshold as extranous
+const int8_t WheelSensitivity = 5;  // Mouse sensitivity multipler - 12 max
+const int8_t MaxWheelInput = 10;    // Ignore values above this threshold as extranous
 
 // Tuning Options
 const unsigned long UpdateRate = 4;          // Controller polling rate, in milliseconds (ms)
 const unsigned long DetectTime = 1000;       // Time before a connected controller is considered stable (ms)
 const unsigned long ConnectRate = 500;       // Rate to attempt reconnections, in ms
-const unsigned long ConfigThreshold = 3000;  // Time the euphoria and green buttons must be held to set a new config (ms)
-const unsigned long EffectsTimeout = 1200;   // Timeout for the effects tracker, in ms
-const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities from the fx dial, 10 = 1/3rd of a revolution
+const unsigned long EffectsTimeout = 400;    // Timeout for the effects tracker, in ms
+const uint8_t       EffectThreshold = 3;     // Threshold to trigger input from the fx dial. One revolution = 31.
 // #define IGNORE_DETECT_PIN                 // Ignore the state of the 'controller detect' pin, for breakouts without one.
 
 // Debug Flags (uncomment to add)
@@ -42,49 +40,41 @@ const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities f
 // #define DEBUG_HID            // See HID inputs as they're pressed/released
 // #define DEBUG_COMMS          // Follow the controller connect and update calls
 // #define DEBUG_CONTROLDETECT  // Trace the controller detect pin functions
-// #define DEBUG_CONFIG         // Debug the config read/set functionality
 
 // ---------------------------------------------------------------------------
 
 #include "DJSpinRhythm_LED.h"   // LED handling classes
 #include "DJSpinRhythm_HID.h"   // HID classes (Keyboard, Mouse)
 #include "DJSpinRhythm_Controller.h"  // Turntable connection and data helper classes
-#include "DJSpinRhythm_ConfigMode.h"  // Configuration mode (left/right) switching class
 
 DJTurntableController dj;
+ConnectionHelper controller(dj, DetectPin, UpdateRate, DetectTime, ConnectRate);
 
-DJTurntableController::TurntableExpansion * mainTable = &dj.right;
-DJTurntableController::TurntableExpansion * altTable = &dj.left;
+MouseButton grabWheel(MOUSE_LEFT);
+MouseButton tapWheel(MOUSE_RIGHT);
 
-MouseButton fire(MOUSE_LEFT);
-MouseButton boop(MOUSE_RIGHT);
-KeyboardButton reload('r');
+KeyboardButton beat(' ');
+KeyboardButton cancel(KEY_ESC);
+KeyboardButton submit(KEY_RETURN);
 
-KeyboardButton ultimate('q');
-KeyboardButton amp('e');
-KeyboardButton crossfade(KEY_LEFT_SHIFT);
-
-KeyboardButton emotes('c');
-
-KeyboardButton moveForward('w');
-KeyboardButton moveLeft('a');
-KeyboardButton moveBack('s');
-KeyboardButton moveRight('d');
-KeyboardButton jump(' ');
+KeyboardButton navigateUp('w');
+KeyboardButton navigateLeft('a');
+KeyboardButton navigateDown('s');
+KeyboardButton navigateRight('d');
 
 EffectHandler fx(dj, EffectsTimeout);
 
-ConnectionHelper controller(dj, DetectPin, UpdateRate, DetectTime, ConnectRate);
-TurntableConfig config(dj, &DJTurntableController::buttonEuphoria, &DJTurntableController::TurntableExpansion::buttonGreen, ConfigThreshold);
-
 void setup() {
-	#ifdef DEBUG
+	#ifdef USB_SERIAL_HID
 	Serial.begin(115200);
+	Serial.println("DJ Hero - Spin Rhythm XD Controller v0.0.0");
+	Serial.println("By David Madison, (c) 2020");
+	Serial.println("http://www.partsnotincluded.com");
+	Serial.println("----------------------------");
+	#endif
+
+	#ifdef DEBUG
 	while (!Serial);  // Wait for connection
-	DEBUG_PRINTLN("DJ Hero - Spin Rhythm XD Controller v0.0.0");
-	DEBUG_PRINTLN("By David Madison, (c) 2020");
-	DEBUG_PRINTLN("http://www.partsnotincluded.com");
-	DEBUG_PRINTLN("----------------------------");
 	#endif
 
 	pinMode(SafetyPin, INPUT_PULLUP);
@@ -94,7 +84,6 @@ void setup() {
 	}
 
 	LED.begin();  // Set LED pin mode
-	config.read();  // Set expansion pointers from EEPROM config
 	controller.begin();  // Initialize controller bus and detect pins
 
 	DEBUG_PRINTLN("Initialization finished. Starting program...");
@@ -103,121 +92,96 @@ void setup() {
 void loop() {
 	if (controller.isReady()) {
 		djController();
-		config.check();
 	}
 	LED.update();
 }
 
 void djController() {
-	// Dual turntables
-	if (dj.getNumTurntables() == 2) {
-		if (!dj.buttonMinus()) {  // Button to disable aiming (for position correction)
-			// Left is vertical, counter-clockwise is up
-			if (altTable == &dj.left) {
-				aiming(mainTable->turntable(), altTable->turntable());
-			}
-			// Right is vertical, clockwise is up
-			else {
-				aiming(mainTable->turntable(), -altTable->turntable());
-			}
-			
+	// Turntable Controls
+	using TableConfig = DJTurntableController::TurntableConfig;  // borrow enum from library
+	const TableConfig config = dj.getTurntableConfig();
+	const uint8_t crossfade = dj.crossfadeSlider();  // use slider as selector
+
+	// Dual turntable mode, single selected
+	// (if both turntables are connected, and the slider is not in the center (~7-8))
+	if (config == TableConfig::Both && (crossfade != 7 && crossfade != 8)) {
+		DJTurntableController::TurntableExpansion* mainTable;
+		DJTurntableController::TurntableExpansion* altTable;
+		
+		// Slider is left, use left turntable for spin and right for buttons
+		if (crossfade <= 6) {
+			mainTable = &dj.left;
+			altTable = &dj.right;
+		}
+		// Slider is right, use right turntable for spin and left for buttons
+		else if (crossfade >= 8) {
+			mainTable = &dj.right;
+			altTable = &dj.left;
 		}
 
-		// Movement
-		jump.press(mainTable->buttonRed());
+		moveWheel(mainTable->turntable());
 
-		// Weapons
-		fire.press(mainTable->buttonGreen() || mainTable->buttonBlue());  // Outside buttons
-		boop.press(altTable->buttonGreen() || altTable->buttonRed() || altTable->buttonBlue());
+		grabWheel.set(altTable->buttonRed());
+		tapWheel.set(altTable->buttonBlue());
+		beat.set(altTable->buttonGreen() || dj.buttonEuphoria());
+	}
+	// Single Turntable, or Dual w/ none selected
+	else {
+		moveWheel(dj.turntable());
+		grabWheel.set(dj.buttonRed());
+		tapWheel.set(dj.buttonBlue());
+		beat.set(dj.buttonGreen() || dj.buttonEuphoria());
 	}
 
-	// Single turntable (either side)
-	else if (dj.getNumTurntables() == 1) {
-		// Aiming
-		if (dj.buttonMinus()) {  // Vertical selector
-			// Left is vertical, counter-clockwise is up
-			if (dj.getTurntableConfig() == DJTurntableController::TurntableConfig::Left) { 
-				aiming(0, dj.turntable());
-			}
-			// Right is vertical, clockwise is up
-			else {
-				aiming(0, -dj.turntable());
-			}
-			
-		}
-		else {
-			aiming(dj.turntable(), 0);
-		}
+	// Base Unit Controls
+	cancel.set(dj.buttonMinus());
+	submit.set(dj.buttonPlus());
 
-		// Movement
-		jump.press(dj.buttonRed());
-
-		// Weapons
-		fire.press(dj.buttonGreen());
-		boop.press(dj.buttonBlue());
-	}
-
-	// --Base Station Abilities--
-	fx.update();
-
-	// Movement
+	// Menu Navigation
 	joyWASD(dj.joyX(), dj.joyY());
 
-	// Weapons
-	reload.press(fx.changed(EffectThreshold) && fx.getTotal() < 0);
+	// FX Dial
+	fx.update();  // update tracker with new data
 
-	// Abilities
-	ultimate.press(dj.buttonEuphoria());
-	amp.press(fx.changed(EffectThreshold) && fx.getTotal() > 0);
-	crossfade.press(dj.crossfadeSlider() > 1);
-
-	// Fun stuff!
-	emotes.press(dj.buttonPlus());
-
-	// --Cleanup--
 	if (fx.changed(EffectThreshold)) {
-		fx.reset();  // Already used abilities, reset to 0
+		HID_Button& rollUp   = navigateDown;  // linked outputs
+		HID_Button& rollDown = navigateUp;
+
+		// check against state to avoid interfering w/ other inputs using the same control
+		if (fx.getTotal() > 0 && rollUp.isPressed() == false) rollUp.press();
+		else if (fx.getTotal() < 0 && rollDown.isPressed() == false) rollDown.press();
+		fx.reset();  // Input was triggered, reset to 0
 	}
 }
 
-void aiming(int8_t xIn, int8_t yIn) {
-	static_assert(HorizontalSens * MaxAimInput <= 127, "Your sensitivity is too high!");  // Check for signed overflow (int8_t)
-	static_assert(VerticalSens   * MaxAimInput <= 127, "Your sensitivity is too high!");
+void moveWheel(int8_t xIn) {
+	// Check for signed overflow (int8_t). The USB mouse output only takes one int8_t value per update.
+	static_assert(WheelSensitivity * MaxWheelInput <= 127, "Your sensitivity is too high!");  // Check for signed overflow (int8_t)
 
-	static int8_t lastAim[2] = { 0, 0 };
-	int8_t * aim[2] = { &xIn, &yIn };  // Store in array for iterative access
+	static int8_t lastAim = 0;
 
-	// Iterate through X/Y
-	for (int i = 0; i < 2; i++) {
-		// Check if above max threshold
-		if (abs(*aim[i]) >= MaxAimInput) {
-			*aim[i] = lastAim[i];
-		}
+	// Check if above max threshold
+	if (abs(xIn) >= MaxWheelInput) xIn = lastAim;
+	else lastAim = xIn;
 
-		// Set 'last' value to current
-		lastAim[i] = *aim[i];
-	}
-
-	Mouse.move(xIn * HorizontalSens, yIn * VerticalSens);
+	Mouse.move(xIn * WheelSensitivity, 0);
 
 	#ifdef DEBUG_HID
-	if (xIn != 0 || yIn != 0) {
+	if (xIn != 0) {
 		DEBUG_PRINT("Moved the mouse {");
-		DEBUG_PRINT(xIn * HorizontalSens);
-		DEBUG_PRINT(", ");
-		DEBUG_PRINT(yIn * VerticalSens);
-		DEBUG_PRINTLN("}");
+		DEBUG_PRINT(xIn * WheelSensitivity);
+		DEBUG_PRINTLN(", 0}");
 	}
 	#endif
 }
 
 void joyWASD(uint8_t x, uint8_t y) {
 	const uint8_t JoyCenter = 32;
-	const uint8_t JoyDeadzone = 6;  // +/-, centered at 32 in (0-63)
+	const uint8_t JoyDeadzone = 20;  // +/-, centered at 32 in (0-63)
 
-	moveLeft.press(x < JoyCenter - JoyDeadzone);
-	moveRight.press(x > JoyCenter + JoyDeadzone);
+	navigateLeft.set(x < JoyCenter - JoyDeadzone);
+	navigateRight.set(x > JoyCenter + JoyDeadzone);
 
-	moveForward.press(y > JoyCenter + JoyDeadzone);
-	moveBack.press(y < JoyCenter - JoyDeadzone);
+	navigateUp.set(y > JoyCenter + JoyDeadzone);
+	navigateDown.set(y < JoyCenter - JoyDeadzone);
 }

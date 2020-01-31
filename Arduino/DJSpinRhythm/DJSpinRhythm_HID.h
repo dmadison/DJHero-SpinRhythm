@@ -86,7 +86,15 @@ public:
 		}
 	}
 
-	void press(boolean state = true) {
+	void press() {
+		set(true);
+	}
+
+	void release() {
+		set(false);
+	}
+
+	void set(boolean state) {
 		if (state == pressed) {
 			return; // Nothing to see here, folks
 		}
@@ -95,8 +103,8 @@ public:
 		pressed = state;
 	}
 
-	void release() {
-		press(false);
+	boolean isPressed() const {
+		return pressed;
 	}
 
 	// Release all buttons, using the linked list
@@ -161,6 +169,12 @@ private:
 		#ifdef DEBUG_HID
 		DEBUG_PRINT("Keyboard ");
 		switch (key) {
+			case(KEY_RETURN):
+				DEBUG_PRINT("return");
+				break;
+			case(KEY_ESC):
+				DEBUG_PRINT("esc");
+				break;
 			case(KEY_LEFT_SHIFT):
 			case(KEY_RIGHT_SHIFT):
 				DEBUG_PRINT("shift");
