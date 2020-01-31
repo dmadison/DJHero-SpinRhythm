@@ -129,9 +129,8 @@ void djController() {
 	else {
 		moveWheel(dj.turntable());
 		grabWheel.set(dj.buttonRed());
-		tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
-
-		beat.set(dj.buttonEuphoria());
+		tapWheel.set(dj.buttonBlue());
+		beat.set(dj.buttonGreen() || dj.buttonEuphoria());
 	}
 
 	// Base Unit Controls
