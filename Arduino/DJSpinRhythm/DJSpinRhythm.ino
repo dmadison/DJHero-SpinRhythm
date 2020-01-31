@@ -97,28 +97,43 @@ void loop() {
 }
 
 void djController() {
-	// "Wheel" Control
-	int8_t turntableOutput = 0;
+	// Turntable Controls
+	using TableConfig = DJTurntableController::TurntableConfig;  // borrow enum from library
+	const TableConfig config = dj.getTurntableConfig();
+	const uint8_t crossfade = dj.crossfadeSlider();  // use slider as selector
 
-	if (dj.getNumTurntables() == 2) {
-		const uint8_t crossfade = dj.crossfadeSlider();  // use slider as selector
+	// Dual turntable mode, single selected
+	if (config == TableConfig::Both && (crossfade != 7 && crossfade != 8)) {
+		DJTurntableController::TurntableExpansion* tableSelected;
+		DJTurntableController::TurntableExpansion* tableAlternate;
+		
+		// Slider is left, use left turntable for spin and right for buttons
+		if (crossfade <= 6) {
+			tableSelected  = &dj.left;
+			tableAlternate = &dj.right;
+		}
+		// Slider is right, use right turntable for spin and left for buttons
+		else if (crossfade >= 8) {
+			tableSelected  = &dj.right;
+			tableAlternate = &dj.left;
+		}
 
-		if (crossfade < 6) turntableOutput = dj.left.turntable();  // slider is left, use left turntable only
-		else if (crossfade > 8) turntableOutput = dj.right.turntable();  // slider is right, use right turntable only
-		else turntableOutput = dj.turntable();  // centered, get a mix of both (+)
+		moveWheel(tableSelected->turntable());
+
+		grabWheel.set(tableAlternate->buttonRed());
+		tapWheel.set(tableAlternate->buttonBlue());
+		beat.set(tableAlternate->buttonGreen() || dj.buttonEuphoria());
 	}
+	// Single Turntable, or Dual w/ none selected
 	else {
-		turntableOutput = dj.turntable();  // use whichever turntable is connected
+		moveWheel(dj.turntable());
+		grabWheel.set(dj.buttonRed());
+		tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
+
+		beat.set(dj.buttonEuphoria());
 	}
-
-	moveWheel(turntableOutput);
-
-	// Turntable Buttons
-	grabWheel.set(dj.buttonRed());
-	tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 
 	// Base Unit Controls
-	beat.set(dj.buttonEuphoria());
 	cancel.set(dj.buttonMinus());
 	submit.set(dj.buttonPlus());
 
