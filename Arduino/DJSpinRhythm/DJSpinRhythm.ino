@@ -30,8 +30,8 @@ const int8_t MaxWheelInput = 10;    // Ignore values above this threshold as ext
 const unsigned long UpdateRate = 4;          // Controller polling rate, in milliseconds (ms)
 const unsigned long DetectTime = 1000;       // Time before a connected controller is considered stable (ms)
 const unsigned long ConnectRate = 500;       // Rate to attempt reconnections, in ms
-const unsigned long EffectsTimeout = 1200;   // Timeout for the effects tracker, in ms
-const uint8_t       EffectThreshold = 10;    // Threshold to trigger abilities from the fx dial, 10 = 1/3rd of a revolution
+const unsigned long EffectsTimeout = 400;    // Timeout for the effects tracker, in ms
+const uint8_t       EffectThreshold = 3;     // Threshold to trigger input from the fx dial. One revolution = 31.
 // #define IGNORE_DETECT_PIN                 // Ignore the state of the 'controller detect' pin, for breakouts without one.
 
 // Debug Flags (uncomment to add)
@@ -101,8 +101,6 @@ void djController() {
 	tapWheel.set(dj.buttonGreen() || dj.buttonBlue());
 
 	// Base Unit Controls
-	fx.update();
-
 	beat.set(dj.buttonEuphoria());
 	cancel.set(dj.buttonMinus());
 	submit.set(dj.buttonPlus());
@@ -110,9 +108,17 @@ void djController() {
 	// Menu Navigation
 	joyWASD(dj.joyX(), dj.joyY());
 
-	// --Cleanup--
+	// FX Dial
+	fx.update();  // update tracker with new data
+
 	if (fx.changed(EffectThreshold)) {
-		fx.reset();  // Already used abilities, reset to 0
+		HID_Button& rollUp   = navigateDown;  // linked outputs
+		HID_Button& rollDown = navigateUp;
+
+		// check against state to avoid interfering w/ other inputs using the same control
+		if (fx.getTotal() > 0 && rollUp.isPressed() == false) rollUp.press();
+		else if (fx.getTotal() < 0 && rollDown.isPressed() == false) rollDown.press();
+		fx.reset();  // Input was triggered, reset to 0
 	}
 }
 

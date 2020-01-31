@@ -103,6 +103,10 @@ public:
 		pressed = state;
 	}
 
+	boolean isPressed() const {
+		return pressed;
+	}
+
 	// Release all buttons, using the linked list
 	static void releaseAll() {
 		HID_Button * ptr = head;
