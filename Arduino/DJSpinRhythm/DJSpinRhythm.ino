@@ -103,26 +103,27 @@ void djController() {
 	const uint8_t crossfade = dj.crossfadeSlider();  // use slider as selector
 
 	// Dual turntable mode, single selected
+	// (if both turntables are connected, and the slider is not in the center (~7-8))
 	if (config == TableConfig::Both && (crossfade != 7 && crossfade != 8)) {
-		DJTurntableController::TurntableExpansion* tableSelected;
-		DJTurntableController::TurntableExpansion* tableAlternate;
+		DJTurntableController::TurntableExpansion* mainTable;
+		DJTurntableController::TurntableExpansion* altTable;
 		
 		// Slider is left, use left turntable for spin and right for buttons
 		if (crossfade <= 6) {
-			tableSelected  = &dj.left;
-			tableAlternate = &dj.right;
+			mainTable = &dj.left;
+			altTable = &dj.right;
 		}
 		// Slider is right, use right turntable for spin and left for buttons
 		else if (crossfade >= 8) {
-			tableSelected  = &dj.right;
-			tableAlternate = &dj.left;
+			mainTable = &dj.right;
+			altTable = &dj.left;
 		}
 
-		moveWheel(tableSelected->turntable());
+		moveWheel(mainTable->turntable());
 
-		grabWheel.set(tableAlternate->buttonRed());
-		tapWheel.set(tableAlternate->buttonBlue());
-		beat.set(tableAlternate->buttonGreen() || dj.buttonEuphoria());
+		grabWheel.set(altTable->buttonRed());
+		tapWheel.set(altTable->buttonBlue());
+		beat.set(altTable->buttonGreen() || dj.buttonEuphoria());
 	}
 	// Single Turntable, or Dual w/ none selected
 	else {
