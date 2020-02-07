@@ -1,5 +1,5 @@
 # DJ Hero Adapter for Spin Rhythm XD
-This project allows a user to play [Spin Rhythm XD](https://www.spinrhythmgame.com/) on PC using an Arduino and the Nintendo Wii variant of the *DJ Hero* turntable.
+This project allows a user to play [*Spin Rhythm XD*](https://www.spinrhythmgame.com/) on PC using an Arduino and the Nintendo Wii variant of the *DJ Hero* turntable.
 
 ## Dependencies
 The *DJ Hero* firmware uses my [NintendoExtensionCtrl library](https://github.com/dmadison/NintendoExtensionCtrl/) ([0.7.4](https://github.com/dmadison/NintendoExtensionCtrl/releases/tag/v0.7.4)) to handle communication to the *DJ Hero* controller itself.
