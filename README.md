@@ -13,7 +13,7 @@ I've linked to the specific library releases that work with this code. Note that
 ## History
 This repository is a fork of the [*DJ Hero* Lucio project](https://github.com/dmadison/DJHero-Lucio), where I modified a *DJ Hero* controller to play as the character of Lucio in *Overwatch*. It retains the same license (GPL v3) and code structure. Only the control scheme has changed.
 
-For more information, check out the blog post on [PartsNotIncluded.com](http://www.partsnotincluded.com/altctrl/playing-lucio-with-a-dj-hero-turntable).
+For more information about the *DJ Hero* Lucio project, check out the blog post on [PartsNotIncluded.com](http://www.partsnotincluded.com/playing-lucio-with-a-dj-hero-turntable).
 
 ## License
 This project is licensed under the terms of the [GNU General Public License](https://www.gnu.org/licenses/gpl-3.0.en.html), either version 3 of the License, or (at your option) any later version.
