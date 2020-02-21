@@ -164,14 +164,14 @@ void moveWheel(int8_t xIn) {
 	if (abs(xIn) >= MaxWheelInput) xIn = lastAim;
 	else lastAim = xIn;
 
+	if (xIn == 0) return;  // 0 input, don't send packet
+
 	Mouse.move(xIn * WheelSensitivity, 0);
 
 	#ifdef DEBUG_HID
-	if (xIn != 0) {
-		DEBUG_PRINT("Moved the mouse {");
-		DEBUG_PRINT(xIn * WheelSensitivity);
-		DEBUG_PRINTLN(", 0}");
-	}
+	DEBUG_PRINT("Moved the mouse {");
+	DEBUG_PRINT(xIn * WheelSensitivity);
+	DEBUG_PRINTLN(", 0}");
 	#endif
 }
 
