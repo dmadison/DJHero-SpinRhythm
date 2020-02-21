@@ -65,16 +65,16 @@ KeyboardButton navigateRight('d');
 EffectHandler fx(dj, EffectsTimeout);
 
 void setup() {
+	#ifdef DEBUG
+	while (!Serial);  // Wait for connection
+	#endif
+
 	#if defined(USB_SERIAL_HID) || defined(__AVR_ATmega32U4__)
 	Serial.begin(115200);
 	Serial.println("DJ Hero - Spin Rhythm XD Controller v1.0.0");
 	Serial.println("By David Madison, (c) 2020");
 	Serial.println("http://www.partsnotincluded.com");
 	Serial.println("----------------------------");
-	#endif
-
-	#ifdef DEBUG
-	while (!Serial);  // Wait for connection
 	#endif
 
 	pinMode(SafetyPin, INPUT_PULLUP);
