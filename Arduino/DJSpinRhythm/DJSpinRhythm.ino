@@ -65,16 +65,16 @@ KeyboardButton navigateRight('d');
 EffectHandler fx(dj, EffectsTimeout);
 
 void setup() {
+	#ifdef DEBUG
+	while (!Serial);  // Wait for connection
+	#endif
+
 	#if defined(USB_SERIAL_HID) || defined(__AVR_ATmega32U4__)
 	Serial.begin(115200);
-	Serial.println("DJ Hero - Spin Rhythm XD Controller v1.0.0");
+	Serial.println("DJ Hero - Spin Rhythm XD Controller v1.0.1");
 	Serial.println("By David Madison, (c) 2020");
 	Serial.println("http://www.partsnotincluded.com");
 	Serial.println("----------------------------");
-	#endif
-
-	#ifdef DEBUG
-	while (!Serial);  // Wait for connection
 	#endif
 
 	pinMode(SafetyPin, INPUT_PULLUP);
@@ -164,14 +164,14 @@ void moveWheel(int8_t xIn) {
 	if (abs(xIn) >= MaxWheelInput) xIn = lastAim;
 	else lastAim = xIn;
 
+	if (xIn == 0) return;  // 0 input, don't send packet
+
 	Mouse.move(xIn * WheelSensitivity, 0);
 
 	#ifdef DEBUG_HID
-	if (xIn != 0) {
-		DEBUG_PRINT("Moved the mouse {");
-		DEBUG_PRINT(xIn * WheelSensitivity);
-		DEBUG_PRINTLN(", 0}");
-	}
+	DEBUG_PRINT("Moved the mouse {");
+	DEBUG_PRINT(xIn * WheelSensitivity);
+	DEBUG_PRINTLN(", 0}");
 	#endif
 }
 
